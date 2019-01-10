@@ -7,7 +7,6 @@ find_package(catkin REQUIRED COMPONENTS
   descartes_moveit
   descartes_planner
   descartes_trajectory
-  eigen_conversions
 )
 
 catkin_package(
@@ -19,7 +18,6 @@ catkin_package(
     descartes_moveit
     descartes_planner
     descartes_trajectory
-    eigen_conversions
 )
 
 include_directories(

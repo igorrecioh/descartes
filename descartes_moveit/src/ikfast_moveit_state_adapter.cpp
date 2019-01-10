@@ -64,18 +64,18 @@ bool descartes_moveit::IkFastMoveitStateAdapter::initialize(const std::string& r
   return computeIKFastTransforms();
 }
 
-bool descartes_moveit::IkFastMoveitStateAdapter::getAllIK(const Eigen::Affine3d& pose,
+bool descartes_moveit::IkFastMoveitStateAdapter::getAllIK(const Eigen::Isometry3d& pose,
                                                           std::vector<std::vector<double>>& joint_poses) const
 {
   joint_poses.clear();
   const auto& solver = joint_group_->getSolverInstance();
 
   // Transform input pose
-  Eigen::Affine3d tool_pose = world_to_base_.frame_inv * pose * tool0_to_tip_.frame;
+  Eigen::Isometry3d tool_pose = world_to_base_.frame_inv * pose * tool0_to_tip_.frame;
 
   // convert to geometry_msgs ...
   geometry_msgs::Pose geometry_pose;
-  tf::poseEigenToMsg(tool_pose, geometry_pose);
+  //tf::poseEigenToMsg(tool_pose, geometry_pose);
   std::vector<geometry_msgs::Pose> poses = { geometry_pose };
 
   std::vector<double> dummy_seed(getDOF(), 0.0);
@@ -97,7 +97,7 @@ bool descartes_moveit::IkFastMoveitStateAdapter::getAllIK(const Eigen::Affine3d&
   return joint_poses.size() > 0;
 }
 
-bool descartes_moveit::IkFastMoveitStateAdapter::getIK(const Eigen::Affine3d& pose,
+bool descartes_moveit::IkFastMoveitStateAdapter::getIK(const Eigen::Isometry3d& pose,
                                                        const std::vector<double>& seed_state,
                                                        std::vector<double>& joint_pose) const
 {
@@ -111,7 +111,7 @@ bool descartes_moveit::IkFastMoveitStateAdapter::getIK(const Eigen::Affine3d& po
 }
 
 bool descartes_moveit::IkFastMoveitStateAdapter::getFK(const std::vector<double>& joint_pose,
-                                                       Eigen::Affine3d& pose) const
+                                                       Eigen::Isometry3d& pose) const
 {
   const auto& solver = joint_group_->getSolverInstance();
 
@@ -124,7 +124,7 @@ bool descartes_moveit::IkFastMoveitStateAdapter::getFK(const std::vector<double>
   if (!solver->getPositionFK(tip_frame, joint_pose, output))
     return false;
 
-  tf::poseMsgToEigen(output[0], pose);  // pose in frame of IkFast base
+  //tf::poseMsgToEigen(output[0], pose);  // pose in frame of IkFast base
   pose = world_to_base_.frame * pose * tool0_to_tip_.frame_inv;
   return true;
 }
